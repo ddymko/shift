@@ -2,15 +2,15 @@ require 'find'
 require 'yaml'
 require 'shellwords'
 require 'fileutils'
+require 'net/scp'
 
 configs = YAML.load_file('config.yml')
-
 Dir.chdir(configs['path'])
 folders = Dir.glob('*').select { |f| File.directory? f }
 # Extraction + rename + move
 if folders.count > 0
   folders.each do |f|
-    next if f !/#{configs['folder_regex']}/.match(f)
+    next unless /#{configs['folder_regex']}/.match(f)
 
     # Unrar file
     video_location = Find.find("#{configs['path']}/#{f}").grep(/rar/)
